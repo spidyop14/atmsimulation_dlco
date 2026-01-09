@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🇮🇳 Indian ATM Machine - Logic Gate Simulation</title>
+<style>
+  body {
+    font-family: 'Courier New', monospace;
+    background-color: #001f3f;
+    color: #00ffcc;
+    padding: 20px;
+  }
+  h1, h2 {
+    color: #ffcc00;
+    text-align: center;
+  }
+  .console {
+    background-color: #000;
+    border: 2px solid #00ffcc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    white-space: pre-line;
+  }
+  button {
+    background-color: #00ffcc;
+    border: none;
+    color: #001f3f;
+    padding: 10px 20px;
+    margin: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  input {
+    background-color: #000;
+    color: #00ffcc;
+    border: 2px solid #00ffcc;
+    padding: 6px;
+    font-family: 'Courier New';
+  }
+</style>
+</head>
+<body>
+
+<h1>🏦 INDIAN ATM MACHINE - LOGIC GATE DEMONSTRATION</h1>
+<h2>By Sanjai Seashathri | AI & DS Department | DLCO Project</h2>
+
+<div class="console" id="output">
+Welcome to the Indian ATM Simulation using Logic Gates.
+Insert Card... Initializing Memory Registers...
+</div>
+
+<br>
+<div id="controls">
+  <label>Enter your 4-digit PIN: </label>
+  <input type="password" id="pinInput" maxlength="4">
+  <button onclick="verifyPIN()">Submit</button>
+</div>
+
+<script>
+let storedPIN = "1234";
+let balance = 10000;
+let authenticated = false;
+let attempts = 0;
+
+function print(msg) {
+  document.getElementById("output").innerHTML += "\n" + msg;
+}
+
+function verifyPIN() {
+  let pin = document.getElementById("pinInput").value;
+  let output = document.getElementById("output");
+  output.innerHTML = ""; 
+  print("Step 1: PIN Verification using XNOR Logic");
+  print("Logic Gate Used: XNOR Gate (Equality Check)");
+  print("Expression: P = (Entered_PIN XNOR Stored_PIN)");
+
+  let P = (pin === storedPIN) ? 1 : 0;
+  print(`Result: P = ${P} → ${P ? "Correct PIN ✅" : "Wrong PIN ❌"}`);
+
+  if (P === 1) {
+    authenticated = true;
+    print("\n✅ Access Granted!\n");
+    showMenu(P);
+  } else {
+    attempts++;
+    if (attempts >= 3) {
+      print("\n⚠️ Too many failed attempts. Card Blocked.");
+      document.getElementById("controls").innerHTML = "";
+    } else {
+      print("\nPlease try again.");
+    }
+  }
+}
+
+function showMenu(P) {
+  let html = `
+  <h3>Select an option:</h3>
+  <button onclick="withdraw(${P})">💸 Withdraw</button>
+  <button onclick="checkBalance(${P})">💰 Check Balance</button>
+  <button onclick="deposit(${P})">🏦 Deposit</button>
+  <button onclick="exitATM()">❌ Exit</button>
+  `;
+  document.getElementById("controls").innerHTML = html;
+}
+
+function withdraw(P) {
+  let amount = parseInt(prompt("Enter amount to withdraw (₹):"));
+  let A1 = 1;
+  let S = (amount > 0 && amount <= balance) ? 1 : 0;
+
+  print(`\nSTEP 2.1 → WITHDRAW OPERATION`);
+  print("Logic Gate Used: AND Gate");
+  print("Expression: W = P ⋅ A1 ⋅ S");
+  print(`Inputs: P=${P}, A1=${A1}, S=${S}`);
+  let W = P && A1 && S;
+  print(`Output (W): ${W} → ${W ? "Withdrawal Allowed ✅" : "Denied ❌"}`);
+
+  let C = 0, D = 0;
+  print("\nNext Logic Gate: OR Gate for Transaction Validation");
+  print("Expression: V = W + C + D");
+  let V = (W || C || D) ? 1 : 0;
+  print(`Inputs: W=${W}, C=${C}, D=${D}`);
+  print(`Output (V): ${V} → ${V ? "Transaction Valid ✅" : "Invalid ❌"}`);
+
+  if (W === 1) {
+    balance -= amount;
+    print(`\n💸 ₹${amount} Withdrawn Successfully`);
+    print(`💰 Remaining Balance: ₹${balance}`);
+  } else {
+    print("\n⚠️ Transaction Failed - Insufficient Balance or Invalid Input");
+  }
+}
+
+function checkBalance(P) {
+  let A2 = 1;
+  print("\nSTEP 2.2 → BALANCE CHECK OPERATION");
+  print("Logic Gate Used: AND Gate");
+  print("Expression: C = P ⋅ A2");
+  print(`Inputs: P=${P}, A2=${A2}`);
+  let C = P && A2;
+  print(`Output (C): ${C} → ${C ? "Access Granted ✅" : "Denied ❌"}`);
+
+  let W = 0, D = 0;
+  print("\nNext Logic Gate: OR Gate for Transaction Validation");
+  print("Expression: V = W + C + D");
+  let V = (W || C || D) ? 1 : 0;
+  print(`Inputs: W=${W}, C=${C}, D=${D}`);
+  print(`Output (V): ${V} → ${V ? "Transaction Valid ✅" : "Invalid ❌"}`);
+
+  if (C === 1) {
+    print(`\n💰 Your Current Balance: ₹${balance}`);
+  }
+}
+
+function deposit(P) {
+  let A3 = 1;
+  let amount = parseInt(prompt("Enter amount to deposit (₹):"));
+  print("\nSTEP 2.3 → DEPOSIT OPERATION");
+  print("Logic Gate Used: AND Gate");
+  print("Expression: D = P ⋅ A3");
+  print(`Inputs: P=${P}, A3=${A3}`);
+  let D = P && A3;
+  print(`Output (D): ${D} → ${D ? "Deposit Allowed ✅" : "Denied ❌"}`);
+
+  let W = 0, C = 0;
+  print("\nNext Logic Gate: OR Gate for Transaction Validation");
+  print("Expression: V = W + C + D");
+  let V = (W || C || D) ? 1 : 0;
+  print(`Inputs: W=${W}, C=${C}, D=${D}`);
+  print(`Output (V): ${V} → ${V ? "Transaction Valid ✅" : "Invalid ❌"}`);
+
+  if (D === 1) {
+    balance += amount;
+    print(`\n✅ ₹${amount} Deposited Successfully`);
+    print(`💰 Updated Balance: ₹${balance}`);
+  }
+}
+
+function exitATM() {
+  print("\nSTEP 3 → EXIT OPERATION");
+  print("-------------------------------------------");
+  print("Logic Gate Used: OR Gate (Final Validation)");
+  print("Expression: V = W + C + D = P ⋅ (A1⋅S + A2 + A3)");
+  print("\n🧠 FINAL LOGIC EXPRESSIONS USED:");
+  print("1️⃣ PIN Verification → XNOR Gate → P = (Entered_PIN XNOR Stored_PIN)");
+  print("2️⃣ Withdraw         → AND Gate → W = P ⋅ A1 ⋅ S");
+  print("3️⃣ Check Balance    → AND Gate → C = P ⋅ A2");
+  print("4️⃣ Deposit          → AND Gate → D = P ⋅ A3");
+  print("5️⃣ Transaction Valid → OR Gate → V = W + C + D");
+  print("\n🙏 Thank you for using Indian ATM 💳");
+  document.getElementById("controls").innerHTML = "";
+}
+</script>
+
+</body>
+</html>
